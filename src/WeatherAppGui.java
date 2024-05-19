@@ -10,34 +10,23 @@ import java.io.File;
 import java.io.IOException;
 
 public class WeatherAppGui extends JFrame {
-
     private JSONObject weatherData;
 
     public WeatherAppGui() {
-        super("Wheater App");
-
+        super("Weather App");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-
         setSize(450, 650);
-
         setLocationRelativeTo(null);
-
         setLayout(null);
-
         setResizable(false);
-
         addGuiComponents();
     }
 
     private void addGuiComponents() {
         JTextField searchTextField = new JTextField();
-
         searchTextField.setBounds(15, 15, 351, 45);
-
         searchTextField.setFont(new Font("Dialog", Font.PLAIN, 24));
-
         add(searchTextField);
-
 
         JLabel weatherConditionImage = new JLabel(loadImage("src/assets/cloudy.png"));
         weatherConditionImage.setBounds(0, 125, 450, 217);
@@ -46,7 +35,6 @@ public class WeatherAppGui extends JFrame {
         JLabel temperatureText = new JLabel("10 C");
         temperatureText.setBounds(0, 350, 450, 54);
         temperatureText.setFont(new Font("Dialog", Font.BOLD, 48));
-
         temperatureText.setHorizontalAlignment(SwingConstants.CENTER);
         add(temperatureText);
 
@@ -69,27 +57,24 @@ public class WeatherAppGui extends JFrame {
         windspeedImage.setBounds(220, 500, 74, 66);
         add(windspeedImage);
 
-        JLabel windspeedText = new JLabel("<html><b>Windspeed</b> 15km/h<html>");
+        JLabel windspeedText = new JLabel("<html><b>Windspeed</b> 15km/h</html>");
         windspeedText.setBounds(310, 500, 85, 55);
         windspeedText.setFont(new Font("Dialog", Font.PLAIN, 16));
         add(windspeedText);
 
         JButton searchButton = new JButton(loadImage("src/assets/search.png"));
-
         searchButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         searchButton.setBounds(375, 13, 47, 45);
         searchButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String userInput = searchTextField.getText();
-
                 if (userInput.replaceAll("\\s", "").length() <= 0) {
                     return;
                 }
-
                 weatherData = WeatherApp.getWeatherData(userInput);
 
-                String weatherCondition = (String) weatherData.get("weather_condiditon");
+                String weatherCondition = (String) weatherData.get("weather_condition");
 
                 switch (weatherCondition) {
                     case "Clear":
@@ -102,7 +87,7 @@ public class WeatherAppGui extends JFrame {
                         weatherConditionImage.setIcon(loadImage("src/assets/rain.png"));
                         break;
                     case "Snow":
-                        weatherConditionImage.setIcon(loadImage("src/assets/snow.png"));
+                        weatherConditionImage.setIcon(loadImage("src/assets/snow.pngImage"));
                         break;
                 }
 
@@ -115,14 +100,13 @@ public class WeatherAppGui extends JFrame {
                 humidityText.setText("<html><b>Humidity</b> " + humidity + "%</html>");
 
                 double windspeed = (double) weatherData.get("windspeed");
-                windspeedText.setText("<html><b>windspeed</b> " + windspeed + "km/h</html>");
-
+                windspeedText.setText("<html><b>Windspeed</b> " + windspeed + "km/h</html>");
             }
         });
         add(searchButton);
     }
 
-
+    // used to create images in our gui components
     private ImageIcon loadImage(String resourcePath) {
         try {
             BufferedImage image = ImageIO.read(new File(resourcePath));
@@ -130,7 +114,16 @@ public class WeatherAppGui extends JFrame {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         System.out.println("Could not find resource");
         return null;
     }
 }
+
+
+
+
+
+
+
+

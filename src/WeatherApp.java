@@ -2,18 +2,17 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import java.awt.*;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class WeatherApp {
 
     public static JSONObject getWeatherData(String locationName) {
+
         JSONArray locationData = getLocationData(locationName);
 
         JSONObject location = (JSONObject) locationData.get(0);
@@ -22,9 +21,9 @@ public class WeatherApp {
 
         String urlString = "https://api.open-meteo.com/v1/forecast?" +
                 "latitude=" + latitude + "&longitude=" + longitude +
-                "&hourly=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&timezone=America%2FSao_Paulo";
-        try {
+                "&hourly=temperature_2m,relativehumidity_2m,weathercode,windspeed_10m&timezone=America%2FLos_Angeles";
 
+        try {
             HttpURLConnection conn = fetchApiResponse(urlString);
 
             if (conn.getResponseCode() != 200) {
@@ -32,10 +31,10 @@ public class WeatherApp {
                 return null;
             }
 
-            StringBuilder resulJson = new StringBuilder();
+            StringBuilder resultJson = new StringBuilder();
             Scanner scanner = new Scanner(conn.getInputStream());
             while (scanner.hasNext()) {
-                resulJson.append(scanner.nextLine());
+                resultJson.append(scanner.nextLine());
             }
 
             scanner.close();
@@ -43,7 +42,7 @@ public class WeatherApp {
             conn.disconnect();
 
             JSONParser parser = new JSONParser();
-            JSONObject resultJsonObj = (JSONObject) parser.parse(String.valueOf(resulJson));
+            JSONObject resultJsonObj = (JSONObject) parser.parse(String.valueOf(resultJson));
 
             JSONObject hourly = (JSONObject) resultJsonObj.get("hourly");
 
@@ -69,8 +68,6 @@ public class WeatherApp {
             weatherData.put("windspeed", windspeed);
 
             return weatherData;
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -79,7 +76,9 @@ public class WeatherApp {
     }
 
     public static JSONArray getLocationData(String locationName) {
+
         locationName = locationName.replaceAll(" ", "+");
+
 
         String urlString = "https://geocoding-api.open-meteo.com/v1/search?name=" +
                 locationName + "&count=10&language=en&format=json";
@@ -111,9 +110,7 @@ public class WeatherApp {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return null;
-
     }
 
     private static HttpURLConnection fetchApiResponse(String urlString) {
@@ -127,7 +124,6 @@ public class WeatherApp {
             return conn;
         } catch (IOException e) {
             e.printStackTrace();
-
         }
         return null;
     }
@@ -145,7 +141,8 @@ public class WeatherApp {
         return 0;
     }
 
-    public static String getCurrentTime() {
+    private static String getCurrentTime() {
+
         LocalDateTime currentDateTime = LocalDateTime.now();
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH':00'");
@@ -159,7 +156,7 @@ public class WeatherApp {
         String weatherCondition = "";
         if (weathercode == 0L) {
             weatherCondition = "Clear";
-        } else if (weathercode <= 3L && weathercode > 0L) {
+        } else if (weathercode > 0L && weathercode <= 3L) {
             weatherCondition = "Cloudy";
         } else if ((weathercode >= 51L && weathercode <= 67L)
                 || (weathercode >= 80L && weathercode <= 99L)) {
@@ -167,7 +164,13 @@ public class WeatherApp {
         } else if (weathercode >= 71L && weathercode <= 77L) {
             weatherCondition = "Snow";
         }
-
         return weatherCondition;
     }
 }
+
+
+
+
+
+
+
